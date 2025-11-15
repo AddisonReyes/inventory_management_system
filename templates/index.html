@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{{ title }}</title>
+  </head>
+  <body>
+    <h1>Template Rendering with FastAPI</h1>
+    <p>Message from the server: **{{ message }}**</p>
+
+    {% if title %}
+      <p>The page title is defined.</p>
+    {% endif %}
+  </body>
+</html>

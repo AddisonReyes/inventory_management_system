@@ -1,8 +1,12 @@
 import random
 from typing import List
 
+from sqlmodel import Session, SQLModel, create_engine, select
+
 from models.product import Product
 
+engine = create_engine("sqlite:///database.db")
+SQLModel.metadata.create_all(engine)
 dummy_products = [
     "One Plus S1",
     "Samsung Galaxy A16",
@@ -21,7 +25,14 @@ def generate_data():
             quantity=random.randint(0, 30),
         )
         new_products.append(prod)
-    return new_products
+
+    with Session(engine) as session:
+        for p in new_products:
+            statement = select(Product).where(Product.name == p.name)
+            prod = session.exec(statement).first()
+            if not prod:
+                session.add(p)
+        session.commit()
 
 
 if __name__ == "__main__":

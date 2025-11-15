@@ -1,33 +1,28 @@
 import uvicorn
-from fastapi import FastAPI
-from sqlmodel import Session, SQLModel, create_engine, select
+from fastapi import FastAPI, Request
+from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
+from sqlmodel import SQLModel, create_engine
 
-from dummy_data import generate_data
-from models.product import Product
-
-app = FastAPI()
 engine = create_engine("sqlite:///database.db")
 SQLModel.metadata.create_all(engine)
 
-
-@app.get("/")
-async def index():
-    return "Hello world!"
+templates = Jinja2Templates(directory="templates")
+app = FastAPI()
 
 
-def create_dummy_data():
-    products_list = generate_data()
-    with Session(engine) as session:
-        for p in products_list:
-            statement = select(Product).where(Product.name == p.name)
-            prod = session.exec(statement).first()
-            if not prod:
-                session.add(p)
-        session.commit()
+@app.get("/", response_class=HTMLResponse)
+async def index(request: Request):
+    context = {
+        "request": request,
+        "title": "IMS - Inventory Management System",
+        "message": "Hello world!",
+    }
+
+    return templates.TemplateResponse("index.html", context)
 
 
 if __name__ == "__main__":
-    create_dummy_data()
 
     uvicorn.run(
         app="main:app",
