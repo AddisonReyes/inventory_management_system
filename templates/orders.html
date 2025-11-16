@@ -1,0 +1,9 @@
+{% extends 'index.html' %}
+
+{% block content %}
+  <ol>
+    {% for order in orders %}
+      <li>{{ order.name }}</li>
+    {% endfor %}
+  </ol>
+{% endblock %}
