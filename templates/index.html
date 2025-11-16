@@ -1,14 +1,19 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <title>{{ title }}</title>
   </head>
   <body>
-    <h1>Template Rendering with FastAPI</h1>
-    <p>Message from the server: **{{ message }}**</p>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/products">Inventory</a>
+      <a href="/orders">Orders</a>
+    </nav>
 
-    {% if title %}
-      <p>The page title is defined.</p>
-    {% endif %}
+    <p>Manage the inventory and purchase orders of your business. With focus is on response speed and concurrency management.</p>
+
+    {% block content %}
+
+    {% endblock %}
   </body>
 </html>

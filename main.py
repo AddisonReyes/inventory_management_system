@@ -2,7 +2,9 @@ import uvicorn
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
-from sqlmodel import SQLModel, create_engine
+from sqlmodel import Session, SQLModel, create_engine, select
+
+from models.product import Product
 
 engine = create_engine("sqlite:///database.db")
 SQLModel.metadata.create_all(engine)
@@ -20,6 +22,18 @@ async def index(request: Request):
     }
 
     return templates.TemplateResponse("index.html", context)
+
+
+@app.get("/products")
+async def inventory(request: Request):
+    with Session(engine) as session:
+        products = session.exec(select(Product)).all()
+        context = {
+            "request": request,
+            "products": products,
+        }
+
+        return templates.TemplateResponse("inventory.html", context)
 
 
 if __name__ == "__main__":
